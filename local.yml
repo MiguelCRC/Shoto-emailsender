@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./compose/local/api/Dockerfile
+    volumes:
+      - /app/node_modules
+      - .:/app
+    env_file:
+      - local.env
+    ports:
+      - "3000:3000"
+    networks:
+      - emailsendernetwork
+    depends_on:
+      - db
+    command: /start.sh
+  
+  db:
+    image: postgres:11-alpine
+    volumes:
+      - postgres_data_local:/var/lib/postgresql/data
+    env_file:
+      - local.env
+    networks:
+      - emailsendernetwork
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data_local: {}
+
+networks:
+  emailsendernetwork: {}
